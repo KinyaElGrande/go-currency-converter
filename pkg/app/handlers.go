@@ -10,7 +10,9 @@ import (
 	"currecy-converter/pkg/models"
 )
 
+//ConvertCurrency is a handler function that handles the conversion
 func ConvertCurrency(w http.ResponseWriter, r *http.Request) {
+	//Read the body Request
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
@@ -19,6 +21,7 @@ func ConvertCurrency(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Validate Content Type
 	ct := r.Header.Get("content-type")
 	if ct != "application/json" {
 		w.WriteHeader(http.StatusUnsupportedMediaType)
@@ -34,6 +37,16 @@ func ConvertCurrency(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Validate the 3 allowed currencies (NGN), (GHS) and (KSH)
+	if validErrs := currencyConvert.Validate(); len(validErrs) > 0 {
+		err := map[string]interface{}{"validationError": validErrs}
+		w.Header().Set("Content-type", "applciation/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	//Start preparing response
 	var currency models.Currency
 	currency.Name = currencyConvert.To
 	currency.CurrencyPair = strings.ToUpper(fmt.Sprintf("%s/%s", currencyConvert.From, currencyConvert.To))
@@ -42,6 +55,7 @@ func ConvertCurrency(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+
 	currency.Amount = exchanged
 
 	//response body
@@ -49,6 +63,7 @@ func ConvertCurrency(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
+		return
 	}
 
 	w.Header().Add("content-type", "application/json")
