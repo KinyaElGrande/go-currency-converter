@@ -1,5 +1,7 @@
 package models
 
+import "math"
+
 type Currency struct {
 	Name         string  `json:"name"`
 	CurrencyPair string  `json:"currency_pair"`
@@ -15,6 +17,9 @@ type CurrencyConvert struct {
 //Exchanger exchanges the amount passed in based on the pair
 // exchange rates are based on (2021-07-16 @11:30am) rates
 func Exchanger(amount float64, pair string) (float64, error) {
+	//Round to nearest 2 decimal places
+	amount = math.Round(amount*100) / 100
+
 	switch pair {
 	case "KSH/NGN":
 		conv := amount / 0.26

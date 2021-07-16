@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+//Validate validates input request
 func (c *CurrencyConvert) Validate() url.Values {
 	errs := url.Values{}
 
@@ -13,7 +14,7 @@ func (c *CurrencyConvert) Validate() url.Values {
 		errs.Add("from", "Sorry! Currencies can only be converted from (NGN), (GHS) and (KSH)")
 	}
 
-	//Check From request
+	//Check To request
 	if !(strings.EqualFold(c.To, "ksh") || strings.EqualFold(c.To, "ghs") || strings.EqualFold(c.To, "ngn")) {
 		errs.Add("to", "Sorry! Currencies can only be converted to (NGN), (GHS) and (KSH)")
 	}

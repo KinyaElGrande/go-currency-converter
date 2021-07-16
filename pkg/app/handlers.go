@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"strings"
 
@@ -56,7 +57,8 @@ func ConvertCurrency(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	currency.Amount = exchanged
+	//Round to nearest 2 decimal places
+	currency.Amount = math.Round(exchanged*100) / 100
 
 	//response body
 	jsonBytes, err := json.Marshal(currency)
