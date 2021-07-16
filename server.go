@@ -1,6 +1,7 @@
 package main
 
 import (
+	"currecy-converter/converter"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,7 +12,7 @@ import (
 type Currency struct {
 	Name         string `json:"name"`
 	CurrencyPair string `json:"currency_pair"`
-	Amount       string `json:"amount"`
+	Amount       float64 `json:"amount"`
 }
 
 type CurrencyConvert struct {
@@ -46,7 +47,14 @@ func convertCurrency(w http.ResponseWriter, r *http.Request) {
 
 	var currency Currency
 	currency.Name = currencyConvert.To
-	currency.CurrencyPair = strings.ToUpper(fmt.Sprintf("%s/%s",currencyConvert.From, currencyConvert.To)) 
+	currency.CurrencyPair = strings.ToUpper(fmt.Sprintf("%s/%s",currencyConvert.From, currencyConvert.To))
+
+	exchanged, err := converter.Exchanger(currencyConvert.Amount, currency.CurrencyPair)
+	if err != nil {
+		return 
+	}
+	currency.Amount = exchanged
+	
 	//response body 
 	jsonBytes, err := json.Marshal(currency)
 	if err != nil {

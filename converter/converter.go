@@ -1,20 +1,27 @@
 package converter
 
-import "fmt"
+//Exchanger exchanges the amount passed in based on the pair
+func Exchanger(amount float64, pair string) (float64, error) {
+	switch pair {
+	case "KSH/NAIRA":
+		conv := amount / 0.045
+		return conv, nil
+	case "KSH/GHS":
+		conv := amount / 50.00
+		return conv, nil
+	case "GHS/KSH":
+		conv := amount / 0.20
+		return conv, nil
+	case "GHS/NAIRA":
+		conv := amount / 0.075
+		return conv, nil
+	case "NAIRA/KSH":
+		conv := amount / 80.05
+		return conv, nil
+	case "NAIRA/GHS":
+		conv := amount / 105.00
+		return conv, nil
+	}
 
-// Currency contains ID and Description of an Currency.
-type Currency struct {
-	ID          string `json:"id"`
-}
-
-type convertCurrencyResponse struct {
-	From       string  `json:"from"`
-	To         string  `json:"to"`
-	FromAmount float64 `json:"from_amount"`
-	ToAmount   float64 `json:"to_amount"`
-}
-
-func ConvertCurrency(from, to Currency, amount float64) (float64, error) {
-	currencyPair := fmt.Sprintf("%s/%s", from, to)
-
+	return 0, nil
 }
