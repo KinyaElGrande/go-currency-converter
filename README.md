@@ -10,6 +10,7 @@ much as possible and any dependency used should be justifiable.
 1. Open _cmd/server_ directory and run `go run main.go` command on your terminal
 2. Visit your local server at `:8080/convert` and send your JSON request with the 
    following fields 
+   
    `{
    "from": "CurrencyFrom",
    "to" : "CurrencyTo",
